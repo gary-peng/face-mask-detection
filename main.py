@@ -4,13 +4,11 @@ from clarifai.errors import ApiError
 from glob import glob
 import os
 import cv2
-import time
-import threading
 
-ROOT = "./training/"
-app = ClarifaiApp(api_key="7692eedc98ca42108d92aa8460ddbfe2")
-MODEL_ID = "facemaskdetection"
-CONCEPTS_LIST = ["mask", "nomask", "nose"]
+ROOT = './training/'
+app = ClarifaiApp(api_key='7692eedc98ca42108d92aa8460ddbfe2')
+MODEL_ID = 'facemaskdetection'
+CONCEPTS_LIST = ['mask', 'nomask', 'nose']
 
 
 def input_image():
@@ -46,15 +44,15 @@ def create_image_set(path, concepts, not_concepts):
 def predict_file(file):
     model = app.models.get(MODEL_ID)
     result = model.predict_by_filename(file)
-    prediction = result["outputs"][0]["data"]["concepts"]
+    prediction = result['outputs'][0]['data']['concepts']
 
     max_val = 0
     for concept in prediction:
-        print("%s: %f" % (concept["name"], concept["value"]))
+        print('%s: %f' % (concept['name'], concept['value']))
 
-        if concept["value"] > max_val:
-            max_val = concept["value"]
-            max_concept = concept["name"]
+        if concept['value'] > max_val:
+            max_val = concept['value']
+            max_concept = concept['name']
     print()
 
     return max_concept
@@ -87,13 +85,13 @@ def capture():
         cv2.imwrite('cap.jpg', image)
 
         msg = {
-            "nomask": "WOW YOU'RE COOL, WEAR A MASK",
-            "nose": "DON'T BE A CLOWN, PULL YOUR MASK OVER YOUR NOSE",
-            "mask": "THANK YOU FOR WEARING A MASK",
+            'nomask': "WOW YOU'RE COOL, WEAR A MASK",
+            'nose': "DON'T BE A CLOWN, PULL YOUR MASK OVER YOUR NOSE",
+            'mask': 'THANK YOU FOR WEARING A MASK',
         }
         font = cv2.FONT_HERSHEY_SIMPLEX
         cv2.putText(image,
-                    msg[predict_file("cap.jpg")],
+                    msg[predict_file('cap.jpg')],
                     (50, 50),
                     font, 0.5,
                     (0, 255, 255),
@@ -103,7 +101,7 @@ def capture():
         cv2.imshow('image', image)
 
         if cv2.waitKey(1) & 0xFF == 27:
-            os.remove("cap.jpg")
+            os.remove('cap.jpg')
             break
 
     cam.release()
